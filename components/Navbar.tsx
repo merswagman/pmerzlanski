@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -7,6 +8,27 @@ import { createClient } from '@/lib/supabase/client'
 export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
+  const [displayName, setDisplayName] = useState<string | null>(null)
+  const [needsName, setNeedsName] = useState(false)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      const name = user?.user_metadata?.display_name
+      if (name) {
+        setDisplayName(name)
+      } else if (user) {
+        setNeedsName(true)
+      }
+    })
+  }, [])
+
+  async function setName(name: 'Chris' | 'Gia') {
+    const supabase = createClient()
+    await supabase.auth.updateUser({ data: { display_name: name } })
+    setDisplayName(name)
+    setNeedsName(false)
+  }
 
   async function signOut() {
     const supabase = createClient()
@@ -43,12 +65,35 @@ export default function Navbar() {
           </div>
         </div>
 
-        <button
-          onClick={signOut}
-          className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
-        >
-          Sign out
-        </button>
+        <div className="flex items-center gap-3">
+          {needsName && (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-500">Who are you?</span>
+              {(['Chris', 'Gia'] as const).map(name => (
+                <button
+                  key={name}
+                  onClick={() => setName(name)}
+                  className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white transition-opacity hover:opacity-80 ${name === 'Chris' ? 'bg-blue-500' : 'bg-pink-500'}`}
+                >
+                  {name[0]}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {displayName && (
+            <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white ${displayName === 'Chris' ? 'bg-blue-500' : 'bg-pink-500'}`}>
+              {displayName[0]}
+            </span>
+          )}
+
+          <button
+            onClick={signOut}
+            className="text-sm text-gray-500 hover:text-gray-800 transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
     </nav>
   )

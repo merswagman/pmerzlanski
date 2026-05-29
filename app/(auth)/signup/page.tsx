@@ -9,17 +9,23 @@ export default function SignupPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [displayName, setDisplayName] = useState<'Chris' | 'Gia' | ''>('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!displayName) { setError('Please select who you are'); return }
     setLoading(true)
     setError('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signUp({ email, password })
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { display_name: displayName } },
+    })
 
     if (error) {
       setError(error.message)
@@ -27,8 +33,6 @@ export default function SignupPage() {
       return
     }
 
-    // Supabase sends a confirmation email by default.
-    // If email confirmation is disabled in your project settings, redirect directly.
     setDone(true)
     setLoading(false)
   }
@@ -62,6 +66,29 @@ export default function SignupPage() {
           {error && (
             <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
           )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Who are you?</label>
+            <div className="flex gap-3">
+              {(['Chris', 'Gia'] as const).map(name => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setDisplayName(name)}
+                  className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition-colors ${
+                    displayName === name
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                      : 'border-gray-300 text-gray-600 hover:border-gray-400'
+                  }`}
+                >
+                  <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${name === 'Chris' ? 'bg-blue-500' : 'bg-pink-500'}`}>
+                    {name[0]}
+                  </span>
+                  {name}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>

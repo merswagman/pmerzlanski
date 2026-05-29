@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { format, parseISO, isPast, isToday } from 'date-fns'
+import { createClient } from '@/lib/supabase/client'
 import { Project, ProjectStatus, ProjectPriority } from '@/lib/types'
 import ProjectCard from '@/components/ProjectCard'
 import StatusBadge from '@/components/StatusBadge'
@@ -102,6 +103,15 @@ export default function ProjectsPage() {
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState<'projects' | 'recurring'>('projects')
+  const [currentUser, setCurrentUser] = useState<'Chris' | 'Gia' | null>(null)
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      const name = user?.user_metadata?.display_name
+      if (name === 'Chris' || name === 'Gia') setCurrentUser(name)
+    })
+  }, [])
 
   useEffect(() => {
     const saved = localStorage.getItem('projectsView')
@@ -146,9 +156,10 @@ export default function ProjectsPage() {
   function sortProjects(list: typeof oneTimeProjects) {
     return [...list].sort((a, b) => {
       const score = (p: typeof a) => {
-        if (p.status === 'in_progress' && p.assignee) return 0
-        if (p.status === 'in_progress') return 1
-        if (p.assignee) return 2
+        if (p.status === 'done') return 4
+        if (currentUser && p.assignee === currentUser && p.status === 'in_progress') return 0
+        if (currentUser && p.assignee === currentUser) return 1
+        if (p.status === 'in_progress') return 2
         return 3
       }
       return score(a) - score(b)
