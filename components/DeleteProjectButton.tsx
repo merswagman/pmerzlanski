@@ -18,7 +18,7 @@ export default function DeleteProjectButton({ id }: { id: string }) {
   if (confirming) {
     return (
       <div className="flex items-center gap-2">
-        <span className="text-sm text-gray-500">Delete this project?</span>
+        <span className="text-sm text-gray-500 dark:text-gray-400">Delete this project?</span>
         <button
           onClick={handleDelete}
           disabled={deleting}
@@ -28,7 +28,7 @@ export default function DeleteProjectButton({ id }: { id: string }) {
         </button>
         <button
           onClick={() => setConfirming(false)}
-          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-800"
         >
           Cancel
         </button>
@@ -39,7 +39,7 @@ export default function DeleteProjectButton({ id }: { id: string }) {
   return (
     <button
       onClick={() => setConfirming(true)}
-      className="text-sm text-red-500 hover:text-red-700 transition-colors"
+      className="text-sm text-red-500 hover:text-red-700 transition-colors dark:text-red-400 dark:hover:text-red-300"
     >
       Delete
     </button>

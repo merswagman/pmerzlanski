@@ -40,9 +40,9 @@ export default function SignupPage() {
   if (done) {
     return (
       <div className="flex min-h-full flex-col items-center justify-center px-4">
-        <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 text-center">
+        <div className="w-full max-w-sm rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 text-center dark:bg-gray-900 dark:ring-gray-700">
           <div className="mb-3 text-3xl">✓</div>
-          <h2 className="text-lg font-semibold text-gray-900">Check your email</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Check your email</h2>
           <p className="mt-2 text-sm text-gray-500">
             We sent a confirmation link to <strong>{email}</strong>. Click it to activate your account.
           </p>
@@ -58,17 +58,17 @@ export default function SignupPage() {
     <div className="flex min-h-full flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Home Projects</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Home Projects</h1>
           <p className="mt-1 text-sm text-gray-500">Create your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700">
           {error && (
-            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+            <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">{error}</div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Who are you?</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">Who are you?</label>
             <div className="flex gap-3">
               {(['Chris', 'Gia'] as const).map(name => (
                 <button
@@ -77,8 +77,8 @@ export default function SignupPage() {
                   onClick={() => setDisplayName(name)}
                   className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition-colors ${
                     displayName === name
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-300 text-gray-600 hover:border-gray-400'
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      : 'border-gray-300 text-gray-600 hover:border-gray-400 dark:border-gray-600 dark:text-gray-400 dark:hover:border-gray-500'
                   }`}
                 >
                   <span className={`h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${name === 'Chris' ? 'bg-blue-500' : 'bg-pink-500'}`}>
@@ -91,19 +91,19 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Email</label>
             <input
               type="email"
               required
               autoComplete="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Password</label>
             <input
               type="password"
               required
@@ -111,7 +111,7 @@ export default function SignupPage() {
               autoComplete="new-password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
             <p className="mt-1 text-xs text-gray-400">At least 6 characters</p>
           </div>

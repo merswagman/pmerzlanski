@@ -1,9 +1,9 @@
 import { ProjectPriority } from '@/lib/types'
 
 const styles: Record<ProjectPriority, string> = {
-  high: 'bg-red-50 text-red-700',
-  medium: 'bg-orange-50 text-orange-600',
-  low: 'bg-gray-100 text-gray-500',
+  high: 'bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300',
+  medium: 'bg-orange-50 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300',
+  low: 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400',
 }
 
 const dots: Record<ProjectPriority, string> = {

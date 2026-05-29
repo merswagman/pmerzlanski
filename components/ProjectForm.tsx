@@ -124,11 +124,11 @@ export default function ProjectForm({ project }: ProjectFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
-        <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+        <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-900/30 dark:text-red-400">{error}</div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">
           Title <span className="text-red-400">*</span>
         </label>
         <input
@@ -137,28 +137,28 @@ export default function ProjectForm({ project }: ProjectFormProps) {
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="e.g. Repaint back fence"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Description</label>
         <textarea
           value={description}
           onChange={e => setDescription(e.target.value)}
           rows={3}
           placeholder="What needs to be done?"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Status</label>
           <select
             value={status}
             onChange={e => setStatus(e.target.value as ProjectStatus)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           >
             {STATUS_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -167,11 +167,11 @@ export default function ProjectForm({ project }: ProjectFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Priority</label>
           <select
             value={priority}
             onChange={e => setPriority(e.target.value as ProjectPriority)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           >
             {PRIORITY_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -181,17 +181,17 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Due Date</label>
         <input
           type="date"
           value={dueDate}
           onChange={e => setDueDate(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Assignee</label>
         <div className="flex gap-2">
           {ASSIGNEES.map(name => (
             <button
@@ -200,8 +200,8 @@ export default function ProjectForm({ project }: ProjectFormProps) {
               onClick={() => setAssignee(assignee === name ? null : name)}
               className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                 assignee === name
-                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                  : 'border-gray-300 text-gray-600 hover:border-gray-400'
+                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                  : 'border-gray-300 text-gray-600 hover:border-gray-400 dark:border-gray-600 dark:text-gray-400 dark:hover:border-gray-500'
               }`}
             >
               <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${name === 'Chris' ? 'bg-blue-500' : 'bg-pink-500'}`}>
@@ -214,7 +214,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             <button
               type="button"
               onClick={() => setAssignee(null)}
-              className="text-xs text-gray-400 hover:text-gray-600 ml-1"
+              className="text-xs text-gray-400 hover:text-gray-600 ml-1 dark:hover:text-gray-300"
             >
               Clear
             </button>
@@ -223,9 +223,9 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       </div>
 
       {/* Recurring toggle */}
-      <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5">
+      <div className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5 dark:border-gray-700">
         <div>
-          <p className="text-sm font-medium text-gray-700">Recurring project</p>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Recurring project</p>
           <p className="text-xs text-gray-400">Repeats on a schedule — shows in the Recurring tab</p>
         </div>
         <button
@@ -239,11 +239,11 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 
       {isRecurring && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Cadence</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Cadence</label>
           <select
             value={cadence}
             onChange={e => setCadence(e.target.value as Cadence)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
           >
             {CADENCE_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -254,7 +254,7 @@ export default function ProjectForm({ project }: ProjectFormProps) {
 
       <div>
         <div className="flex items-center justify-between mb-1">
-          <label className="block text-sm font-medium text-gray-700">Tags</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
           <button
             type="button"
             onClick={handleAiTag}
@@ -285,13 +285,13 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             {tags.map(tag => (
               <span
                 key={tag}
-                className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700"
+                className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300"
               >
                 {tag}
                 <button
                   type="button"
                   onClick={() => setTags(prev => prev.filter(t => t !== tag))}
-                  className="text-indigo-400 hover:text-indigo-700"
+                  className="text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
                   aria-label={`Remove tag ${tag}`}
                 >
                   <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,12 +310,12 @@ export default function ProjectForm({ project }: ProjectFormProps) {
             onChange={e => setTagInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addTag() } }}
             placeholder="Type a tag and press Enter"
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
           />
           <button
             type="button"
             onClick={addTag}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
           >
             Add
           </button>
@@ -323,21 +323,21 @@ export default function ProjectForm({ project }: ProjectFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1 dark:text-gray-300">Notes</label>
         <textarea
           value={notes}
           onChange={e => setNotes(e.target.value)}
           rows={4}
           placeholder="Materials needed, reference links, measurements..."
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         />
       </div>
 
-      <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
+      <div className="flex justify-end gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
         >
           Cancel
         </button>

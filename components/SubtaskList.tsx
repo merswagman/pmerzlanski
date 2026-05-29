@@ -43,7 +43,7 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
   return (
     <div>
       <div className="flex items-center justify-between mb-2">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
           Subtasks
           {subtasks.length > 0 && (
             <span className="ml-2 text-xs font-normal text-gray-400">
@@ -54,14 +54,14 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
       </div>
 
       {subtasks.length > 0 && (
-        <ul className="mb-2 divide-y divide-gray-100 rounded-lg border border-gray-200 overflow-hidden">
+        <ul className="mb-2 divide-y divide-gray-100 rounded-lg border border-gray-200 overflow-hidden dark:divide-gray-700 dark:border-gray-700">
           {subtasks.map(subtask => (
-            <li key={subtask.id} className="group flex items-center gap-2 bg-white px-3 py-2 hover:bg-gray-50">
+            <li key={subtask.id} className="group flex items-center gap-2 bg-white px-3 py-2 hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700/50">
               <button
                 type="button"
                 onClick={() => toggle(subtask)}
                 className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                  subtask.done ? 'border-green-500 bg-green-500' : 'border-gray-300 hover:border-indigo-400'
+                  subtask.done ? 'border-green-500 bg-green-500' : 'border-gray-300 hover:border-indigo-400 dark:border-gray-600'
                 }`}
               >
                 {subtask.done && (
@@ -71,14 +71,14 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
                 )}
               </button>
 
-              <span className={`flex-1 text-sm ${subtask.done ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+              <span className={`flex-1 text-sm ${subtask.done ? 'line-through text-gray-400' : 'text-gray-700 dark:text-gray-200'}`}>
                 {subtask.title}
               </span>
 
               <button
                 type="button"
                 onClick={() => remove(subtask.id)}
-                className="hidden group-hover:flex items-center justify-center h-5 w-5 rounded text-gray-300 hover:text-red-400 transition-colors"
+                className="hidden group-hover:flex items-center justify-center h-5 w-5 rounded text-gray-300 hover:text-red-400 transition-colors dark:text-gray-600 dark:hover:text-red-400"
                 aria-label="Delete subtask"
               >
                 <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
             onBlur={() => { if (!input.trim()) setAdding(false) }}
             placeholder="Subtask title, press Enter to add"
             autoFocus
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
           />
           <button
             type="button"
@@ -117,7 +117,7 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
           <button
             type="button"
             onClick={() => { setAdding(false); setInput('') }}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors"
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700"
           >
             Cancel
           </button>
@@ -126,7 +126,7 @@ export default function SubtaskList({ projectId, initial }: { projectId: string;
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-indigo-600 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-indigo-600 transition-colors dark:hover:text-indigo-400"
         >
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />

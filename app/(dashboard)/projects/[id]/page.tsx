@@ -22,15 +22,15 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-900">Edit Project</h1>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-50">Edit Project</h1>
         <DeleteProjectButton id={project.id} />
       </div>
 
-      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700">
         <ProjectForm project={project} />
       </div>
 
-      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+      <div className="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 dark:bg-gray-900 dark:ring-gray-700">
         <SubtaskList projectId={project.id} initial={subtasks} />
       </div>
     </div>

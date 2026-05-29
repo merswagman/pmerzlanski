@@ -52,15 +52,15 @@ function ProjectListRow({ project }: { project: Project }) {
     !isToday(parseISO(project.due_date))
 
   return (
-    <Link href={`/projects/${project.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors group">
+    <Link href={`/projects/${project.id}`} className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors group">
       <div className="flex-1 min-w-0">
-        <span className="text-sm font-medium text-gray-900 group-hover:text-indigo-700 transition-colors">
+        <span className="text-sm font-medium text-gray-900 group-hover:text-indigo-700 transition-colors dark:text-gray-100 dark:group-hover:text-indigo-400">
           {project.title}
         </span>
         {project.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-0.5">
             {project.tags.slice(0, 4).map(tag => (
-              <span key={tag} className="text-xs text-indigo-500">#{tag}</span>
+              <span key={tag} className="text-xs text-indigo-500 dark:text-indigo-400">#{tag}</span>
             ))}
             {project.tags.length > 4 && (
               <span className="text-xs text-gray-400">+{project.tags.length - 4}</span>
@@ -77,7 +77,7 @@ function ProjectListRow({ project }: { project: Project }) {
         <PriorityBadge priority={project.priority} />
         <StatusBadge status={project.status} />
         {project.due_date ? (
-          <span className={`text-xs w-24 text-right ${isOverdue ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
+          <span className={`text-xs w-24 text-right ${isOverdue ? 'text-red-500 dark:text-red-400 font-medium' : 'text-gray-400'}`}>
             {isOverdue ? 'Overdue' : format(parseISO(project.due_date), 'MMM d, yyyy')}
           </span>
         ) : (
@@ -101,6 +101,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true)
   const [allTags, setAllTags] = useState<string[]>([])
   const [view, setView] = useState<'grid' | 'list'>('grid')
+  const [sort, setSort] = useState<'smart' | 'priority' | 'status' | 'due' | 'name'>('smart')
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState<'projects' | 'recurring'>('projects')
   const [currentUser, setCurrentUser] = useState<'Chris' | 'Gia' | null>(null)
@@ -116,11 +117,18 @@ export default function ProjectsPage() {
   useEffect(() => {
     const saved = localStorage.getItem('projectsView')
     if (saved === 'list' || saved === 'grid') setView(saved)
+    const savedSort = localStorage.getItem('projectsSort')
+    if (savedSort === 'smart' || savedSort === 'priority' || savedSort === 'status' || savedSort === 'due' || savedSort === 'name') setSort(savedSort)
   }, [])
 
   function toggleView(v: 'grid' | 'list') {
     setView(v)
     localStorage.setItem('projectsView', v)
+  }
+
+  function changeSort(v: typeof sort) {
+    setSort(v)
+    localStorage.setItem('projectsSort', v)
   }
 
   useEffect(() => {
@@ -153,16 +161,37 @@ export default function ProjectsPage() {
     .filter(p => assigneeFilter === 'all' || p.assignee === assigneeFilter)
     .filter(p => !tagFilter || p.tags.includes(tagFilter))
 
+  const PRIORITY_RANK: Record<string, number> = { high: 0, medium: 1, low: 2 }
+  const STATUS_RANK: Record<string, number> = { in_progress: 0, not_started: 1, on_hold: 2, done: 3 }
+
   function sortProjects(list: typeof oneTimeProjects) {
     return [...list].sort((a, b) => {
-      const score = (p: typeof a) => {
+      if (sort === 'priority') {
+        const p = PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority]
+        return p !== 0 ? p : STATUS_RANK[a.status] - STATUS_RANK[b.status]
+      }
+      if (sort === 'status') {
+        const s = STATUS_RANK[a.status] - STATUS_RANK[b.status]
+        return s !== 0 ? s : PRIORITY_RANK[a.priority] - PRIORITY_RANK[b.priority]
+      }
+      if (sort === 'due') {
+        if (!a.due_date && !b.due_date) return 0
+        if (!a.due_date) return 1
+        if (!b.due_date) return -1
+        return a.due_date < b.due_date ? -1 : 1
+      }
+      if (sort === 'name') {
+        return a.title.localeCompare(b.title)
+      }
+      // smart (default)
+      const smartScore = (p: typeof a) => {
         if (p.status === 'done') return 4
         if (currentUser && p.assignee === currentUser && p.status === 'in_progress') return 0
         if (currentUser && p.assignee === currentUser) return 1
         if (p.status === 'in_progress') return 2
         return 3
       }
-      return score(a) - score(b)
+      return smartScore(a) - smartScore(b)
     })
   }
 
@@ -189,17 +218,17 @@ export default function ProjectsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-1">
+        <div className="flex items-center gap-1 rounded-lg bg-gray-100 p-1 dark:bg-gray-800">
           <button
             onClick={() => setTab('projects')}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${tab === 'projects' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${tab === 'projects' ? 'bg-white shadow-sm text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
           >
             Projects
             {!loading && <span className="ml-1.5 text-xs text-gray-400">{oneTimeProjects.length}</span>}
           </button>
           <button
             onClick={() => setTab('recurring')}
-            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${tab === 'recurring' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`rounded-md px-4 py-1.5 text-sm font-medium transition-colors ${tab === 'recurring' ? 'bg-white shadow-sm text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}
           >
             Recurring
             {!loading && <span className="ml-1.5 text-xs text-gray-400">{maintenanceProjects.length}</span>}
@@ -211,17 +240,28 @@ export default function ProjectsPage() {
               <select
                 value={assigneeFilter}
                 onChange={e => setParam('assignee', e.target.value)}
-                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
               >
                 <option value="all">All assignees</option>
                 <option value="Chris">Chris</option>
                 <option value="Gia">Gia</option>
               </select>
-              <div className="flex items-center rounded-lg border border-gray-200 bg-white p-0.5">
-                <button onClick={() => toggleView('grid')} className={`rounded-md p-1.5 transition-colors ${view === 'grid' ? 'bg-indigo-50' : 'hover:bg-gray-100'}`} aria-label="Grid view">
+              <select
+                value={sort}
+                onChange={e => changeSort(e.target.value as typeof sort)}
+                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300"
+              >
+                <option value="smart">Smart sort</option>
+                <option value="priority">Priority</option>
+                <option value="status">Status</option>
+                <option value="due">Due date</option>
+                <option value="name">Name</option>
+              </select>
+              <div className="flex items-center rounded-lg border border-gray-200 bg-white p-0.5 dark:border-gray-700 dark:bg-gray-800">
+                <button onClick={() => toggleView('grid')} className={`rounded-md p-1.5 transition-colors ${view === 'grid' ? 'bg-indigo-50 dark:bg-indigo-900/40' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`} aria-label="Grid view">
                   <GridIcon active={view === 'grid'} />
                 </button>
-                <button onClick={() => toggleView('list')} className={`rounded-md p-1.5 transition-colors ${view === 'list' ? 'bg-indigo-50' : 'hover:bg-gray-100'}`} aria-label="List view">
+                <button onClick={() => toggleView('list')} className={`rounded-md p-1.5 transition-colors ${view === 'list' ? 'bg-indigo-50 dark:bg-indigo-900/40' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`} aria-label="List view">
                   <ListIcon active={view === 'list'} />
                 </button>
               </div>
@@ -237,9 +277,9 @@ export default function ProjectsPage() {
       {tab === 'recurring' && !loading && (
         maintenanceProjects.length > 0
           ? <MaintenanceSection initial={maintenanceProjects} />
-          : <div className="flex flex-col items-center justify-center rounded-xl bg-white py-16 shadow-sm ring-1 ring-gray-200 text-center">
+          : <div className="flex flex-col items-center justify-center rounded-xl bg-white py-16 shadow-sm ring-1 ring-gray-200 text-center dark:bg-gray-900 dark:ring-gray-700">
               <p className="text-gray-400 text-sm">No recurring projects yet</p>
-              <Link href="/projects/new" className="mt-3 text-sm font-medium text-indigo-600 hover:underline">
+              <Link href="/projects/new" className="mt-3 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">
                 Create one
               </Link>
             </div>
@@ -256,7 +296,7 @@ export default function ProjectsPage() {
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search projects..."
-          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
         />
         {search && (
           <button
@@ -280,7 +320,7 @@ export default function ProjectsPage() {
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 statusFilter === f.value
                   ? 'bg-indigo-600 text-white'
-                  : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-indigo-300'
+                  : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-indigo-300 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700 dark:hover:ring-indigo-500'
               }`}
             >
               {f.label}
@@ -295,8 +335,8 @@ export default function ProjectsPage() {
               onClick={() => setParam('priority', f.value)}
               className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
                 priorityFilter === f.value
-                  ? 'bg-gray-800 text-white'
-                  : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-gray-400'
+                  ? 'bg-gray-800 text-white dark:bg-gray-200 dark:text-gray-900'
+                  : 'bg-white text-gray-600 ring-1 ring-gray-200 hover:ring-gray-400 dark:bg-gray-800 dark:text-gray-300 dark:ring-gray-700 dark:hover:ring-gray-500'
               }`}
             >
               {f.label} priority
@@ -318,7 +358,7 @@ export default function ProjectsPage() {
               <button
                 key={tag}
                 onClick={() => setParam('tag', tag)}
-                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-indigo-600 ring-1 ring-indigo-100 hover:ring-indigo-300 transition-colors"
+                className="rounded-full bg-white px-3 py-1 text-xs font-medium text-indigo-600 ring-1 ring-indigo-100 hover:ring-indigo-300 transition-colors dark:bg-gray-800 dark:text-indigo-400 dark:ring-indigo-900/50 dark:hover:ring-indigo-500"
               >
                 #{tag}
               </button>
@@ -331,23 +371,23 @@ export default function ProjectsPage() {
         view === 'grid' ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-36 rounded-xl bg-white shadow-sm ring-1 ring-gray-200 animate-pulse" />
+              <div key={i} className="h-36 rounded-xl bg-white shadow-sm ring-1 ring-gray-200 animate-pulse dark:bg-gray-800 dark:ring-gray-700" />
             ))}
           </div>
         ) : (
-          <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 divide-y divide-gray-100">
+          <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 divide-y divide-gray-100 dark:bg-gray-900 dark:ring-gray-700 dark:divide-gray-700">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-12 animate-pulse bg-gray-50 mx-4 my-2 rounded-lg" />
+              <div key={i} className="h-12 animate-pulse bg-gray-50 mx-4 my-2 rounded-lg dark:bg-gray-800" />
             ))}
           </div>
         )
       ) : visibleProjects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl bg-white py-16 shadow-sm ring-1 ring-gray-200 text-center">
+        <div className="flex flex-col items-center justify-center rounded-xl bg-white py-16 shadow-sm ring-1 ring-gray-200 text-center dark:bg-gray-900 dark:ring-gray-700">
           <p className="text-gray-400 text-sm">
             {search ? `No projects matching "${search}"` : 'No projects found'}
           </p>
           {!search && (
-            <Link href="/projects/new" className="mt-3 text-sm font-medium text-indigo-600 hover:underline">
+            <Link href="/projects/new" className="mt-3 text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400">
               Add your first project
             </Link>
           )}
@@ -359,8 +399,8 @@ export default function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 divide-y divide-gray-100 overflow-hidden">
-          <div className="flex items-center gap-4 px-4 py-2 bg-gray-50 border-b border-gray-200">
+        <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 divide-y divide-gray-100 overflow-hidden dark:bg-gray-900 dark:ring-gray-700 dark:divide-gray-700">
+          <div className="flex items-center gap-4 px-4 py-2 bg-gray-50 border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <span className="flex-1 text-xs font-medium text-gray-500 uppercase tracking-wide">Project</span>
             <div className="flex items-center gap-3 shrink-0 text-xs font-medium text-gray-500 uppercase tracking-wide">
               <span className="w-16">Priority</span>

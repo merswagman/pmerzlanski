@@ -18,12 +18,12 @@ const CADENCE_LABELS: Record<string, string> = {
 }
 
 const CADENCE_COLORS: Record<string, string> = {
-  daily:    'bg-red-50 text-red-600',
-  weekly:   'bg-blue-50 text-blue-600',
-  biweekly: 'bg-indigo-50 text-indigo-600',
-  monthly:  'bg-purple-50 text-purple-600',
-  seasonal: 'bg-orange-50 text-orange-600',
-  annual:   'bg-gray-100 text-gray-600',
+  daily:    'bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-300',
+  weekly:   'bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300',
+  biweekly: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300',
+  monthly:  'bg-purple-50 text-purple-600 dark:bg-purple-900/40 dark:text-purple-300',
+  seasonal: 'bg-orange-50 text-orange-600 dark:bg-orange-900/40 dark:text-orange-300',
+  annual:   'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
 }
 
 function isDoneThisPeriod(lastCompletedAt: string | null, cadence: string | null): boolean {
@@ -84,38 +84,38 @@ export default function MaintenanceSection({ initial }: { initial: Project[] }) 
     .filter(g => g.items.length > 0)
 
   return (
-    <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-        <h2 className="text-sm font-semibold text-gray-900">Recurring Tasks</h2>
+    <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden dark:bg-gray-900 dark:ring-gray-700">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Recurring Tasks</h2>
         <div className="flex items-center gap-2">
-          <div className="h-1.5 w-24 rounded-full bg-gray-100 overflow-hidden">
+          <div className="h-1.5 w-24 rounded-full bg-gray-100 overflow-hidden dark:bg-gray-700">
             <div
               className="h-full rounded-full bg-green-500 transition-all duration-300"
               style={{ width: total > 0 ? `${(doneCount / total) * 100}%` : '0%' }}
             />
           </div>
-          <span className="text-xs font-medium text-gray-500">{doneCount}/{total} done</span>
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{doneCount}/{total} done</span>
         </div>
       </div>
 
       {groups.map(group => (
         <div key={group.cadence}>
-          <div className="px-4 py-1.5 bg-gray-50 border-b border-gray-100">
+          <div className="px-4 py-1.5 bg-gray-50 border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
             <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${CADENCE_COLORS[group.cadence]}`}>
               {CADENCE_LABELS[group.cadence]}
             </span>
           </div>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-gray-50 dark:divide-gray-700/50">
             {group.items.map(project => {
               const done = isDoneThisPeriod(project.last_completed_at, project.cadence)
               return (
                 <div
                   key={project.id}
-                  className={`group flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-gray-50 ${done ? 'opacity-60' : ''}`}
+                  className={`group flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60 ${done ? 'opacity-60' : ''}`}
                 >
                   <button
                     onClick={() => toggle(project)}
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${done ? 'border-green-500 bg-green-500' : 'border-gray-300 hover:border-indigo-400'}`}
+                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${done ? 'border-green-500 bg-green-500' : 'border-gray-300 hover:border-indigo-400 dark:border-gray-600'}`}
                   >
                     {done && (
                       <svg className="h-3 w-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export default function MaintenanceSection({ initial }: { initial: Project[] }) 
                     )}
                   </button>
 
-                  <span className={`flex-1 text-sm ${done ? 'line-through text-gray-400' : 'text-gray-800'}`}>
+                  <span className={`flex-1 text-sm ${done ? 'line-through text-gray-400' : 'text-gray-800 dark:text-gray-100'}`}>
                     {project.title}
                   </span>
 
@@ -142,7 +142,7 @@ export default function MaintenanceSection({ initial }: { initial: Project[] }) 
 
                   <Link
                     href={`/projects/${project.id}`}
-                    className="hidden group-hover:flex items-center justify-center h-6 w-6 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                    className="hidden group-hover:flex items-center justify-center h-6 w-6 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors dark:hover:text-indigo-400 dark:hover:bg-indigo-900/30"
                     aria-label="Edit project"
                   >
                     <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
